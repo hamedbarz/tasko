@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tasko/screens/task.dart';
+import 'package:tasko/widgets/add_task_btn.dart';
+import 'package:tasko/widgets/hero_section.dart';
+import 'package:tasko/widgets/task_item.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -31,84 +33,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icon(Icons.menu, size: 32),
                     ],
                   ), //Logo And Menu
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "کارها رو مدیریت کن",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "با App راکت کارهای شخصی خودت رو منظم کن و با مدیریت کامل به اون ها رسیدگی کن",
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ), //Hero Section
+                  const HeroSection(),
                   Expanded(
                       child: ListView.builder(
                     itemCount: 15,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(vertical: 5),
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "کار فلان",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text("توضیحات کار فلان هست این",
-                                    style: TextStyle(color: Colors.grey[600])),
-                              ],
-                            ),
-                            const Icon(Icons.delete,
-                                color: Colors.red, size: 20),
-                          ],
-                        ),
-                      );
-                    },
+                    itemBuilder: (context, index)=> TaskItem(context: context, index: index)
+
                   )) //Task List
                 ]),
-                Positioned(
+                const Positioned(
                     bottom: 10,
                     left: 0,
-                    child: GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TaskPage()));
-                      },
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.red[400],
-                            borderRadius: BorderRadius.circular(20)),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ))
+                    child: AddTaskBtn())
               ],
             ),
           ),
