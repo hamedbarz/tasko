@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasko/models/task.dart';
+import 'package:tasko/widgets/add_new_todo.dart';
 import 'package:tasko/widgets/todo_item.dart';
 
 class TaskPage extends StatefulWidget {
@@ -9,13 +10,19 @@ class TaskPage extends StatefulWidget {
   State<TaskPage> createState() => _TaskPageState();
 }
 
-List<Task> todoList = [];
-
-//newTaskInputController = new input
-
-TextEditingController todoInputController = new TextEditingController();
 
 class _TaskPageState extends State<TaskPage> {
+
+  List<Task> todoList = [];
+
+//newTaskInputController = new input
+  addNewTodo(value) {
+    setState(() {
+      todoList.add(Task(title: value, isDone: false));
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -86,22 +93,7 @@ class _TaskPageState extends State<TaskPage> {
                         ),
                       ),
                       Expanded(
-                          child: TextField(
-                            controller: todoInputController,
-                            onSubmitted: (value) {
-                              setState(() {
-                                todoList.add(Task(title: value, isDone: false));
-                              });
-
-                              todoInputController.clear();
-
-
-
-                            },
-                            decoration: InputDecoration(
-                              hintText: "کار جدید به لیست کارها اضافه نمایید  ",
-                            ),
-                          )
+                          child: AddNewTodo(addNewTodoFn: addNewTodo)
                       )
                     ],
                   )
