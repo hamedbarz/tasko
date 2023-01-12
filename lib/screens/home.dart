@@ -1,18 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:tasko/widgets/add_task_btn.dart';
+import 'package:tasko/providers/database/database_core.dart';
+import 'package:tasko/providers/database/task_db.dart';
+import 'package:tasko/widgets/btn_add.dart';
 import 'package:tasko/widgets/hero_section.dart';
 import 'package:tasko/widgets/task_item.dart';
 
+import '../models/task.dart';
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  String test = 'startApp';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TaskDB taskDb = TaskDB();
+  List<Task> taskList = [];
+
+  addTaskToList(Task newTask) async {
+    setState(() {
+      taskList.add(newTask);
+    });
+
+    int id = await taskDb.add(newTask);
+    print(id.toString());
+  }
+
+  updateTaskItem(Task taskItem) {
+    List<Task> newTaskList = taskList.map((oldItemTask) {
+      if (oldItemTask.id == taskItem.id) {
+        return taskItem;
+      } else {
+        return oldItemTask;
+      }
+    }).toList();
+    setState(() {
+      taskList = newTaskList;
+    });
+
+    taskDb.update(taskItem.id ?? 0, taskItem);
+  }
+
+  deleteTaskItem(Task taskItem) {
+    setState(() {
+      taskList.removeWhere((item) => item.id == taskItem.id);
+    });
+    taskDb.delete(taskItem.id);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.test = 'initState';
+    print("_______________________initState____________________________");
+    TaskDB().getAll().then((List<Task> value) {
+      setState(() {
+        taskList = value;
+      });
+    });
+    print(
+        "_______________________initState after DB ____________________________");
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("_______________________build____________________________");
+    print(widget.test);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -32,19 +86,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Icon(Icons.menu, size: 32),
                     ],
-                  ), //Logo And Menu
+                  ),
+                  //Logo And Menu
                   const HeroSection(),
                   Expanded(
                       child: ListView.builder(
-                    itemCount: 15,
-                    itemBuilder: (context, index)=> TaskItem(context: context, index: index)
-
-                  )) //Task List
+                          itemCount: taskList.length,
+                          itemBuilder: (context, index) => TaskItem(
+                              context: context,
+                              index: index,
+                              task: taskList[index],
+                              updateTaskItemFn: updateTaskItem,
+                              deleteTaskItemFn: deleteTaskItem)))
+                  //Task List
                 ]),
-                const Positioned(
+                Positioned(
                     bottom: 10,
                     left: 0,
-                    child: AddTaskBtn())
+                    child: BtnAdd(addNewTaskFn: addTaskToList))
               ],
             ),
           ),

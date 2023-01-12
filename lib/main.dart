@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'vazirmatn',
       ),
-      home: const Scaffold(
+      home: Scaffold(
         body: HomeScreen(),
       ),
     );
