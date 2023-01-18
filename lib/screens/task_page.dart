@@ -4,6 +4,7 @@ import 'package:tasko/widgets/add_new_todo.dart';
 import 'package:tasko/widgets/todo_item.dart';
 
 import '../models/task.dart';
+import '../providers/database/todo_db.dart';
 
 class TaskPage extends StatefulWidget {
   //const TaskPage({Key? key}) : super(key: key);
@@ -25,18 +26,31 @@ class _TaskPageState extends State<TaskPage> {
 
 
   addNewTodo(value) {
-    widget.newTask?.addTodo(value);
+    Todo newTodo = Todo(title: value, isDone: 0, taskId: widget.newTask?.id ?? 0);
+    TodoDB().add(newTodo);
+    todoList.add(newTodo);
     setState(() {});
   }
 
-  toggleDone(id){
-    widget.newTask?.toggleDone(id);
-    setState(() {});
+  getTaskTodos(int taskId) async {
+    todoList = await TodoDB().getAll(taskId);
+    setState(() { });
   }
 
-  deleteTodo(id){
-    widget.newTask?.delete(id);
-    setState(() {});
+  toggleDone(todoId, isDone) async {
+    await TodoDB().update(todoId, isDone==1?0:1);
+
+    todoList.map((item) {
+        if(item.id == todoId) item.isDone = isDone==1?0:1;
+      }
+    ).toList();
+    setState(() { });
+  }
+
+  deleteTodo(todoId) async{
+    await TodoDB().delete(todoId);
+    todoList.removeWhere((todo) => todo.id ==  todoId);
+    setState(() { });
   }
 
   @override
@@ -47,6 +61,7 @@ class _TaskPageState extends State<TaskPage> {
       titleInputController.text = widget.newTask?.title ?? "";
       deskInputController.text = widget.newTask?.desc ?? "";
     }
+    getTaskTodos(widget.newTask?.id ?? 0);
   }
 
   @override
@@ -76,8 +91,7 @@ class _TaskPageState extends State<TaskPage> {
                               setState(() {
                                 if(widget.newTask == null){
                                   widget.newTask = Task(
-                                      title: value,
-                                      todos: todoList
+                                      title: value
                                   );
                                 }else{
                                   widget.newTask?.title = value;
@@ -117,12 +131,12 @@ class _TaskPageState extends State<TaskPage> {
 
                   Expanded(
                     child: ListView.builder(
-                      itemCount: widget.newTask?.todos.length ?? 0,
+                      itemCount: todoList.length,
                       itemBuilder: (context, index) {
                           return TodoItem(
-                              id: widget.newTask?.todos[index].id ?? 0,
-                              title: widget.newTask?.todos[index].title ?? "",
-                              isDone: widget.newTask?.todos[index].isDone ?? false,
+                              id: todoList[index].id ?? 0,
+                              title: todoList[index].title,
+                              isDone: todoList[index].isDone,
                               toggleDone: toggleDone,
                               deleteTodo: deleteTodo,
                           );

@@ -1,8 +1,19 @@
 
 class Todo {
-  int id;
+  int? id;
   String title;
-  bool isDone;
+  int isDone;
+  int taskId;
 
-  Todo({required this.id, required this.title, required this.isDone});
+  Todo({this.id, required this.title, required this.isDone, required this.taskId});
+
+  Map<String, Object?> toMap(){
+    return {
+      'id' : id,
+      'title' : title,
+      'is_done' : isDone,
+      'task_id' : taskId
+    };
+  }
+
 }

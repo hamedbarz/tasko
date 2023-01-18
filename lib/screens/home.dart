@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tasko/providers/database/database_core.dart';
 import 'package:tasko/providers/database/task_db.dart';
 import 'package:tasko/widgets/btn_add.dart';
 import 'package:tasko/widgets/hero_section.dart';
@@ -53,20 +52,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     widget.test = 'initState';
-    print("_______________________initState____________________________");
     TaskDB().getAll().then((List<Task> value) {
       setState(() {
         taskList = value;
       });
     });
-    print(
-        "_______________________initState after DB ____________________________");
   }
 
   @override
   Widget build(BuildContext context) {
-    print("_______________________build____________________________");
-    print(widget.test);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(

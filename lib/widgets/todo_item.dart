@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 class TodoItem extends StatelessWidget {
-  //const TodoItem({Key? key}) : super(key: key);
 
   final int id;
   final String title;
-  final bool isDone;
+  final int isDone;
   Function toggleDone;
   Function deleteTodo;
 
@@ -21,7 +20,7 @@ class TodoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        toggleDone(id);
+        toggleDone(id, isDone);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 5),
@@ -35,10 +34,10 @@ class TodoItem extends StatelessWidget {
                   width: 20,
                   height: 20,
                   decoration: BoxDecoration(
-                    color: isDone ? Colors.red[400] : Colors.grey[500],
+                    color: isDone==1 ? Colors.red[400] : Colors.grey[500],
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: isDone
+                  child: isDone==1
                       ? const Icon(
                           Icons.check,
                           color: Colors.white,
@@ -49,9 +48,9 @@ class TodoItem extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                      color: isDone ? Colors.red[400] : Colors.grey[800],
+                      color: isDone==1 ? Colors.red[400] : Colors.grey[800],
                       fontSize: 16,
-                      decoration: isDone ? TextDecoration.lineThrough : null),
+                      decoration: isDone==1 ? TextDecoration.lineThrough : null),
                 ),
               ],
             ),
@@ -59,7 +58,7 @@ class TodoItem extends StatelessWidget {
                 onTap: () {
                   deleteTodo(id);
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.delete,
                   color: Colors.red,
                 )),

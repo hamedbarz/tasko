@@ -18,15 +18,13 @@ class TaskDB extends DatabaseCore {
         Task(
             id: result[index]['id'],
             title: result[index]['title'],
-            desc: result[index]['desc'],
-            todos: [])
+            desc: result[index]['desc'])
     );
   }
 
   Future<int> update(int taskId, Task task) async{
     Database db = await dbConnect();
     int id = await db.update('task', task.toMap(), where: 'id=?', whereArgs: [taskId]);
-    print(id.toString());
     return id;
   }
 
